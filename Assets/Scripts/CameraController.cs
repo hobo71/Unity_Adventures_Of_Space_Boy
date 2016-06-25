@@ -16,10 +16,10 @@ public class CameraController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        followTarget(target, followAhead, smoothing, targetPosition);
+        FollowTarget(target, followAhead, smoothing, targetPosition);
 	}
 
-    private void followTarget(GameObject target, float followAhead, float smoothing, Vector3 targetPosition)
+    private void FollowTarget(GameObject target, float followAhead, float smoothing, Vector3 targetPosition)
     {
         targetPosition = new Vector3(target.transform.position.x, transform.position.y, transform.position.z);
 

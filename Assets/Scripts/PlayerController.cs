@@ -13,6 +13,8 @@ public class PlayerController : MonoBehaviour {
     // To check what the player lands on, Ground, Enemy, Water, and so on
     public LayerMask whatIsGround;
     public bool isGrounded;
+    public Vector3 respawnPosition;
+    public LevelManager theLevelManager;
 
     private Rigidbody2D myRigidbody;
     private Animator myAnim;
@@ -22,15 +24,19 @@ public class PlayerController : MonoBehaviour {
         // Gets the components which this script is attached to
         myRigidbody = GetComponent<Rigidbody2D>();
         myAnim = GetComponent<Animator>();
+
+        respawnPosition = transform.position;
+
+        theLevelManager = FindObjectOfType<LevelManager>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
-        isGroundedMethod(groundCheck, groundCheckRadius, whatIsGround);
-        moveLeftandRight(moveSpeed);
-        jump(jumpSpeed);
-        animate(myRigidbody, isGrounded);  
+        IsGroundedMethod(groundCheck, groundCheckRadius, whatIsGround);
+        MoveLeftandRight(moveSpeed);
+        Jump(jumpSpeed);
+        Animate(myRigidbody, isGrounded);  
 
     }
 
@@ -40,11 +46,21 @@ public class PlayerController : MonoBehaviour {
         // If the Player enters the KillPlane zone it will deactivate the player
         if (other.tag == "KillPlane")
         {
-            gameObject.SetActive(false);
+            //gameObject.SetActive(false);
+            //transform.position = respawnPosition;
+
+            theLevelManager.Respawn();
+        }
+
+        // If the player enters Checkpoint zone it will set the new respawn point
+        if (other.tag == "Checkpoint")
+        {
+            // Simply set the respawnPoisition to be Checkpoints position
+            respawnPosition = other.transform.position;
         }
     }
 
-    private void moveLeftandRight(float moveSpeed)
+    private void MoveLeftandRight(float moveSpeed)
     {
         // Right and Left movement using Axes from Input
         if (Input.GetAxisRaw("Horizontal") > 0f)
@@ -69,7 +85,7 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
-    private void jump(float jumpSpeed)
+    private void Jump(float jumpSpeed)
     {
         if(Input.GetButtonDown("Jump") && isGrounded || Input.GetKeyDown(KeyCode.W) && isGrounded || Input.GetKeyDown(KeyCode.UpArrow) && isGrounded)
         {
@@ -77,7 +93,7 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
-    private bool isGroundedMethod(Transform groundCheck, float groundCheckRadius, LayerMask whatIsGround)
+    private bool IsGroundedMethod(Transform groundCheck, float groundCheckRadius, LayerMask whatIsGround)
     {
         // Creates overlap circle to check whether on ground or not.
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, whatIsGround);
@@ -85,7 +101,7 @@ public class PlayerController : MonoBehaviour {
         return isGrounded;
     }
 
-    private void animate(Rigidbody2D myRigidbody, bool isGrounded)
+    private void Animate(Rigidbody2D myRigidbody, bool isGrounded)
     {
         // Animation, get the absolute value of x
         myAnim.SetFloat("Speed", Mathf.Abs(myRigidbody.velocity.x));
