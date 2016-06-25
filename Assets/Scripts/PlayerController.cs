@@ -30,8 +30,18 @@ public class PlayerController : MonoBehaviour {
         isGroundedMethod(groundCheck, groundCheckRadius, whatIsGround);
         moveLeftandRight(moveSpeed);
         jump(jumpSpeed);
-        animate(myRigidbody, isGrounded); 
+        animate(myRigidbody, isGrounded);  
 
+    }
+
+    // Triggers have 3 phases, Enter, In, Exit
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        // If the Player enters the KillPlane zone it will deactivate the player
+        if (other.tag == "KillPlane")
+        {
+            gameObject.SetActive(false);
+        }
     }
 
     private void moveLeftandRight(float moveSpeed)

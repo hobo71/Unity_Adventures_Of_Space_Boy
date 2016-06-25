@@ -16,6 +16,11 @@ public class CameraController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        followTarget(target, followAhead, smoothing, targetPosition);
+	}
+
+    private void followTarget(GameObject target, float followAhead, float smoothing, Vector3 targetPosition)
+    {
         targetPosition = new Vector3(target.transform.position.x, transform.position.y, transform.position.z);
 
         // This moves the target of the camera ahead of the player
@@ -32,5 +37,5 @@ public class CameraController : MonoBehaviour {
 
         // To avoid having different smoothing speeds for different frame rates, we will multiply with deltaTime.
         transform.position = Vector3.Lerp(transform.position, targetPosition, smoothing * Time.deltaTime);
-	}
+    }
 }
