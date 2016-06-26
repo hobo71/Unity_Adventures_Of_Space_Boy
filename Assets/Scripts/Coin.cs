@@ -3,9 +3,13 @@ using System.Collections;
 
 public class Coin : MonoBehaviour {
 
+    public int coinValue;
+
+    private LevelManager theLevelManager;
+
 	// Use this for initialization
 	void Start () {
-	
+        theLevelManager = FindObjectOfType<LevelManager>();
 	}
 	
 	// Update is called once per frame
@@ -17,6 +21,7 @@ public class Coin : MonoBehaviour {
     {
         if (other.tag == "Player")
         {
+            theLevelManager.AddCoins(coinValue);
             Destroy(gameObject);
         }
     }
