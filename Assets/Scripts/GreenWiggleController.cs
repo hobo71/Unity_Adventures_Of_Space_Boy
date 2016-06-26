@@ -19,7 +19,12 @@ public class GreenWiggleController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        movementSystem();
 
+	}
+
+    private void movementSystem()
+    {
         if (movingRight && transform.position.x > rightPoint.position.x)
         {
             movingRight = false;
@@ -32,10 +37,10 @@ public class GreenWiggleController : MonoBehaviour {
         if (movingRight)
         {
             myRigidBody.velocity = new Vector3(moveSpeed, myRigidBody.velocity.y, 0f);
-        } 
+        }
         else
         {
             myRigidBody.velocity = new Vector3(-moveSpeed, myRigidBody.velocity.y, 0f);
         }
-	}
+    }
 }

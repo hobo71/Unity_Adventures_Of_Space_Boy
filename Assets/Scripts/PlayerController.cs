@@ -16,6 +16,8 @@ public class PlayerController : MonoBehaviour {
     public Vector3 respawnPosition;
     public LevelManager theLevelManager;
 
+    public GameObject stompBox;
+
     private Rigidbody2D myRigidbody;
     private Animator myAnim;
 
@@ -36,7 +38,9 @@ public class PlayerController : MonoBehaviour {
         IsGroundedMethod(groundCheck, groundCheckRadius, whatIsGround);
         MoveLeftandRight(moveSpeed);
         Jump(jumpSpeed);
-        Animate(myRigidbody, isGrounded);  
+        Animate(myRigidbody, isGrounded);
+        StompBoxActivator();
+
 
     }
 
@@ -75,6 +79,18 @@ public class PlayerController : MonoBehaviour {
         if (other.gameObject.tag == "MovingPlatform")
         {
             transform.parent = null;
+        }
+    }
+
+    private void StompBoxActivator()
+    {
+        if (myRigidbody.velocity.y < 0)
+        {
+            stompBox.SetActive(true);
+        }
+        else
+        {
+            stompBox.SetActive(false);
         }
     }
 
