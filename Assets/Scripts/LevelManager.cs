@@ -6,21 +6,43 @@ public class LevelManager : MonoBehaviour {
 
     public float waitToRespawnAtDeath;
     public float waitToRespawnAfterDeath;
+
     public PlayerController thePlayer;
+
     public int coinCount;
     public Text coinText;
+
+    public Image heart1;
+    public Image heart2;
+    public Image heart3;
+
+    public Sprite heartFull;
+    public Sprite heartHalf;
+    public Sprite heartEmpty;
+
+    public int maxHealth;
+    public int healthCount;
+
+    private bool isRespawning;
+
 
     public GameObject deathSplosion;
 
 	// Use this for initialization
 	void Start () {
         thePlayer = FindObjectOfType<PlayerController>();
-        coinText.text = "Coins: " + coinCount;
+        coinText.text = ": " + coinCount;
+
+        healthCount = maxHealth;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        
+        if (healthCount <= 0 && !isRespawning)
+        {
+            Respawn();
+            isRespawning = true;
+        }
     }
 
     public void Respawn()
@@ -39,11 +61,18 @@ public class LevelManager : MonoBehaviour {
         // Wait some seconds after death
         yield return new WaitForSeconds(waitToRespawnAtDeath);
 
+        
+
         // Move to respawn position
         thePlayer.transform.position = thePlayer.respawnPosition;
 
         // Wait while camera gets in position
         yield return new WaitForSeconds(waitToRespawnAfterDeath);
+        
+        // Set health back to max
+        healthCount = maxHealth;
+        isRespawning = false;
+        UpdateHeartMeter();
 
         // Activate the player
         thePlayer.gameObject.SetActive(true);
@@ -53,6 +82,59 @@ public class LevelManager : MonoBehaviour {
     public void AddCoins(int coinsToAdd)
     {
         coinCount += coinsToAdd;
-        coinText.text = "Coins: " + coinCount;
+        coinText.text = ": " + coinCount;
+    }
+
+    public void HurtPlayer(int damageToTake)
+    {
+        healthCount -= damageToTake;
+        UpdateHeartMeter();
+    }
+
+    public void UpdateHeartMeter()
+    {
+        switch (healthCount)
+        {
+            case 6:
+                heart1.sprite = heartFull;
+                heart2.sprite = heartFull;
+                heart3.sprite = heartFull;
+                return;
+            case 5:
+                heart1.sprite = heartFull;
+                heart2.sprite = heartFull;
+                heart3.sprite = heartHalf;
+                return;
+            case 4:
+                heart1.sprite = heartFull;
+                heart2.sprite = heartFull;
+                heart3.sprite = heartEmpty;
+                return;
+            case 3:
+                heart1.sprite = heartFull;
+                heart2.sprite = heartHalf;
+                heart3.sprite = heartEmpty;
+                return;
+            case 2:
+                heart1.sprite = heartFull;
+                heart2.sprite = heartEmpty;
+                heart3.sprite = heartEmpty;
+                return;
+            case 1:
+                heart1.sprite = heartHalf;
+                heart2.sprite = heartEmpty;
+                heart3.sprite = heartEmpty;
+                return;
+            case 0:
+                heart1.sprite = heartEmpty;
+                heart2.sprite = heartEmpty;
+                heart3.sprite = heartEmpty;
+                return;
+            default:
+                heart1.sprite = heartEmpty;
+                heart2.sprite = heartEmpty;
+                heart3.sprite = heartEmpty;
+                return;
+        }
     }
 }
