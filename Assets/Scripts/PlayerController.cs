@@ -60,6 +60,24 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
+    // While we collide with MovingPlatform Players position will be equal to Platform
+    void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.gameObject.tag == "MovingPlatform")
+        {
+            transform.parent = other.transform;
+        }
+    }
+
+    // Simply remove players parent :'( so, it doesn't get dragged around by the parent (MovingPlatform)
+    void OnCollisionExit2D(Collision2D other)
+    {
+        if (other.gameObject.tag == "MovingPlatform")
+        {
+            transform.parent = null;
+        }
+    }
+
     private void MoveLeftandRight(float moveSpeed)
     {
         // Right and Left movement using Axes from Input
