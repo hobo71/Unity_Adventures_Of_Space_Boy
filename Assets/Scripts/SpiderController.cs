@@ -30,7 +30,13 @@ public class SpiderController : MonoBehaviour {
     {
         if (other.tag == "KillPlane")
         {
-            Destroy(gameObject);
+            //Destroy(gameObject);
+            gameObject.SetActive(false);
         }
+    }
+
+    void OnEnable()
+    {
+        canMove = false;
     }
 }

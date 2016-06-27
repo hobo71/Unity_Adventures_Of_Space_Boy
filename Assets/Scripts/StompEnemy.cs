@@ -24,14 +24,16 @@ public class StompEnemy : MonoBehaviour {
     {
         if (other.tag == "EnemySpider")
         {
-            Destroy(other.gameObject);
+            //Destroy(other.gameObject);
+            other.gameObject.SetActive(false);
 
             Instantiate(deathSplosionYellow, other.transform.position, other.transform.rotation);
             thePlayerRigidBody.velocity = new Vector3(thePlayerRigidBody.velocity.x, bounceForce, 0f);
         }
         if (other.tag == "EnemyGreenWiggle")
         {
-            Destroy(other.gameObject);
+            //Destroy(other.gameObject);
+            other.gameObject.SetActive(false);
 
             Instantiate(deathSplosionGreen, other.transform.position, other.transform.rotation);
             thePlayerRigidBody.velocity = new Vector3(thePlayerRigidBody.velocity.x, bounceForce, 0f);

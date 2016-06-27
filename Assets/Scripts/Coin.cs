@@ -22,7 +22,8 @@ public class Coin : MonoBehaviour {
         if (other.tag == "Player")
         {
             theLevelManager.AddCoins(coinValue);
-            Destroy(gameObject);
+            //Destroy(gameObject);
+            gameObject.SetActive(false);
         }
     }
 }

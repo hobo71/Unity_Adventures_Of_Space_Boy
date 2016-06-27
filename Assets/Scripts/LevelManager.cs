@@ -25,6 +25,9 @@ public class LevelManager : MonoBehaviour {
 
     private bool isRespawning;
 
+    // Array to contain objects that can be reset once player dies
+    public ResetOnRespawn[] objectsToReset;
+
 
     public GameObject deathSplosion;
 
@@ -34,6 +37,8 @@ public class LevelManager : MonoBehaviour {
         coinText.text = ": " + coinCount;
 
         healthCount = maxHealth;
+
+        objectsToReset = FindObjectsOfType<ResetOnRespawn>();
 	}
 	
 	// Update is called once per frame
@@ -61,8 +66,6 @@ public class LevelManager : MonoBehaviour {
         // Wait some seconds after death
         yield return new WaitForSeconds(waitToRespawnAtDeath);
 
-        
-
         // Move to respawn position
         thePlayer.transform.position = thePlayer.respawnPosition;
 
@@ -74,8 +77,19 @@ public class LevelManager : MonoBehaviour {
         isRespawning = false;
         UpdateHeartMeter();
 
+        // If dead coins reset to 0
+        coinCount = 0;
+        coinText.text = ": " + coinCount;
+
         // Activate the player
         thePlayer.gameObject.SetActive(true);
+
+        // Respawn items/enemies
+        for (int i = 0; i < objectsToReset.Length; i++)
+        {
+            objectsToReset[i].gameObject.SetActive(true);
+            objectsToReset[i].ResetObject();
+        }
         
     }
 
