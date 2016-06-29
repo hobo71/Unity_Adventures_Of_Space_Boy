@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour {
     // For checking with collision
     public Transform groundCheck;
     public float groundCheckRadius;
+    
     // To check what the player lands on, Ground, Enemy, Water, and so on
     public LayerMask whatIsGround;
     public bool isGrounded;
@@ -17,6 +18,14 @@ public class PlayerController : MonoBehaviour {
     public LevelManager theLevelManager;
 
     public GameObject stompBox;
+
+    // Knockback variables when player gets hit
+    public float knockbackForce;
+    public float knockbackLength;
+    private float knockbackCounter;
+
+    public float invincibilityLength;
+    private float invincibilityCounter;
 
     private Rigidbody2D myRigidbody;
     private Animator myAnim;
@@ -36,8 +45,7 @@ public class PlayerController : MonoBehaviour {
 	void Update () {
 
         IsGroundedMethod(groundCheck, groundCheckRadius, whatIsGround);
-        MoveLeftandRight(moveSpeed);
-        Jump(jumpSpeed);
+        MoveLeftandRight(moveSpeed, jumpSpeed);
         Animate(myRigidbody, isGrounded);
         StompBoxActivator();
 
@@ -82,6 +90,13 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
+    public void Knockback()
+    {
+        knockbackCounter = knockbackLength;
+        invincibilityCounter = invincibilityLength;
+        theLevelManager.invincible = true;
+    }
+
     private void StompBoxActivator()
     {
         if (myRigidbody.velocity.y < 0)
@@ -94,36 +109,63 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
-    private void MoveLeftandRight(float moveSpeed)
+    private void MoveLeftandRight(float moveSpeed, float jumpSpeed)
     {
-        // Right and Left movement using Axes from Input
-        if (Input.GetAxisRaw("Horizontal") > 0f)
+        if (knockbackCounter <= 0)
         {
-            myRigidbody.velocity = new Vector3(moveSpeed, myRigidbody.velocity.y, 0f);
+            // Right and Left movement using Axes from Input
+            if (Input.GetAxisRaw("Horizontal") > 0f)
+            {
+                myRigidbody.velocity = new Vector3(moveSpeed, myRigidbody.velocity.y, 0f);
 
-            // When player moving right, it will face right
-            transform.localScale= new Vector3(1f, 1f, 1f);
+                // When player moving right, it will face right
+                transform.localScale= new Vector3(1f, 1f, 1f);
+            }
+            else if (Input.GetAxisRaw("Horizontal") < 0f)
+            {
+                myRigidbody.velocity = new Vector3(-moveSpeed, myRigidbody.velocity.y, 0f);
+
+                // When player moving left, it will face left
+                transform.localScale = new Vector3(-1f, 1f, 1f);
+            }
+            // To prevent the player from sliding
+            else
+            {
+                myRigidbody.velocity = new Vector3(0f, myRigidbody.velocity.y, 0f);
+            }
+
+
+            // Jumping
+            if (Input.GetButtonDown("Jump") && isGrounded || Input.GetKeyDown(KeyCode.W) && isGrounded || Input.GetKeyDown(KeyCode.UpArrow) && isGrounded)
+            {
+                myRigidbody.velocity = new Vector3(myRigidbody.velocity.x, jumpSpeed, 0);
+            }
+
+
         }
-        else if (Input.GetAxisRaw("Horizontal") < 0f)
-        {
-            myRigidbody.velocity = new Vector3(-moveSpeed, myRigidbody.velocity.y, 0f);
 
-            // When player moving left, it will face left
-            transform.localScale = new Vector3(-1f, 1f, 1f);
+        if (knockbackCounter > 0)
+        {
+            knockbackCounter -= Time.deltaTime;
+
+            if (transform.localScale.x > 0)
+            {
+                myRigidbody.velocity = new Vector3(-knockbackForce, knockbackForce, 0f);
+
+            }
+            else
+            {
+                myRigidbody.velocity = new Vector3(knockbackForce, knockbackForce, 0f);
+            }
         }
-
-        // To prevent the player from sliding
-        else
+        if (invincibilityCounter > 0)
         {
-            myRigidbody.velocity = new Vector3(0f, myRigidbody.velocity.y, 0f);
+            invincibilityCounter -= Time.deltaTime;
         }
-    }
-
-    private void Jump(float jumpSpeed)
-    {
-        if(Input.GetButtonDown("Jump") && isGrounded || Input.GetKeyDown(KeyCode.W) && isGrounded || Input.GetKeyDown(KeyCode.UpArrow) && isGrounded)
+        if (invincibilityCounter <= 0)
         {
-            myRigidbody.velocity = new Vector3(myRigidbody.velocity.x, jumpSpeed, 0);
+
+            theLevelManager.invincible = false;
         }
     }
 

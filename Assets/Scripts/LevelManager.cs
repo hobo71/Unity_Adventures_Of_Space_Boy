@@ -23,6 +23,8 @@ public class LevelManager : MonoBehaviour {
     public int maxHealth;
     public int healthCount;
 
+    public bool invincible;
+
     private bool isRespawning;
 
     // Array to contain objects that can be reset once player dies
@@ -101,8 +103,14 @@ public class LevelManager : MonoBehaviour {
 
     public void HurtPlayer(int damageToTake)
     {
-        healthCount -= damageToTake;
-        UpdateHeartMeter();
+        if (!invincible)
+        {
+            healthCount -= damageToTake;
+            UpdateHeartMeter();
+
+            thePlayer.Knockback();
+        }
+
     }
 
     public void UpdateHeartMeter()
