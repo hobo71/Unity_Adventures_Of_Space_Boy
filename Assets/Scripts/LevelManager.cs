@@ -27,6 +27,12 @@ public class LevelManager : MonoBehaviour {
 
     private bool isRespawning;
 
+    public int startingLives;
+    public int currentLives;
+    public Text livesText;
+
+    public GameObject gameOverScreen;
+
     // Array to contain objects that can be reset once player dies
     public ResetOnRespawn[] objectsToReset;
 
@@ -41,6 +47,9 @@ public class LevelManager : MonoBehaviour {
         healthCount = maxHealth;
 
         objectsToReset = FindObjectsOfType<ResetOnRespawn>();
+
+        currentLives = startingLives;
+        livesText.text = "Lives x " + currentLives;
 	}
 	
 	// Update is called once per frame
@@ -54,7 +63,18 @@ public class LevelManager : MonoBehaviour {
 
     public void Respawn()
     {
-        StartCoroutine("RespawnCo");
+        currentLives -= 1;
+        livesText.text = "Lives x " + currentLives;
+
+        if (currentLives > 0)
+        {
+            StartCoroutine("RespawnCo");
+        }
+        else
+        {
+            thePlayer.gameObject.SetActive(false);
+            gameOverScreen.SetActive(true);
+        }
     }
 
     // Co-routine used to delay the respawn of player upon death
@@ -99,6 +119,23 @@ public class LevelManager : MonoBehaviour {
     {
         coinCount += coinsToAdd;
         coinText.text = ": " + coinCount;
+    }
+
+    public void AddLives(int livesToAdd)
+    {
+        currentLives += livesToAdd;
+        livesText.text = "Lives x " + currentLives;
+    }
+
+    public void AddHealth(int healthToAdd)
+    {
+        healthCount += healthToAdd;
+        if (healthCount > maxHealth)
+        {
+            healthCount = maxHealth;
+        }
+
+        UpdateHeartMeter();
     }
 
     public void HurtPlayer(int damageToTake)
