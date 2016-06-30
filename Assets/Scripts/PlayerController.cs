@@ -32,6 +32,7 @@ public class PlayerController : MonoBehaviour {
 
     public AudioSource jumpSound;
     public AudioSource hurtSound;
+    public AudioSource checkPointSound;
 
 	// Use this for initialization
 	void Start () {
@@ -72,6 +73,11 @@ public class PlayerController : MonoBehaviour {
         {
             // Simply set the respawnPoisition to be Checkpoints position
             respawnPosition = other.transform.position;
+            if (enabled)
+            {
+                checkPointSound.Play();
+                other.enabled = false;
+            }
         }
     }
 

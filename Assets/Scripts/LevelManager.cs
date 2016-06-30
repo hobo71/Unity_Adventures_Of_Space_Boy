@@ -33,8 +33,17 @@ public class LevelManager : MonoBehaviour {
     public int startingLives;
     public int currentLives;
     public Text livesText;
+    public AudioSource lifeUp;
+
+    public Image livesImage;
+    private Image livesCurrentSize;
+    private Image livesNewSize;
 
     public GameObject gameOverScreen;
+
+    public AudioSource backgroundMusic;
+
+    public AudioSource gameOverSound;
 
     // Array to contain objects that can be reset once player dies
     public ResetOnRespawn[] objectsToReset;
@@ -46,6 +55,8 @@ public class LevelManager : MonoBehaviour {
 	void Start () {
         thePlayer = FindObjectOfType<PlayerController>();
         coinText.text = ": " + coinCount;
+        //backgroundMusic.Play();
+        //backgroundMusic.loop = true;
 
         healthCount = maxHealth;
 
@@ -83,6 +94,8 @@ public class LevelManager : MonoBehaviour {
         else
         {
             thePlayer.gameObject.SetActive(false);
+            backgroundMusic.Stop();
+            gameOverSound.Play();
             gameOverScreen.SetActive(true);
         }
     }
@@ -138,6 +151,8 @@ public class LevelManager : MonoBehaviour {
     {
         currentLives += livesToAdd;
         livesText.text = "Lives x " + currentLives;
+        lifeUp.Play();
+        
     }
 
     public void AddHealth(int healthToAdd)
@@ -147,6 +162,8 @@ public class LevelManager : MonoBehaviour {
         {
             healthCount = maxHealth;
         }
+
+        coinSound.Play();
 
         UpdateHeartMeter();
     }
