@@ -30,6 +30,9 @@ public class PlayerController : MonoBehaviour {
     private Rigidbody2D myRigidbody;
     private Animator myAnim;
 
+    public AudioSource jumpSound;
+    public AudioSource hurtSound;
+
 	// Use this for initialization
 	void Start () {
         // Gets the components which this script is attached to
@@ -92,6 +95,7 @@ public class PlayerController : MonoBehaviour {
 
     public void Knockback()
     {
+        hurtSound.Play();
         knockbackCounter = knockbackLength;
         invincibilityCounter = invincibilityLength;
         theLevelManager.invincible = true;
@@ -139,6 +143,7 @@ public class PlayerController : MonoBehaviour {
             if (Input.GetButtonDown("Jump") && isGrounded || Input.GetKeyDown(KeyCode.W) && isGrounded || Input.GetKeyDown(KeyCode.UpArrow) && isGrounded)
             {
                 myRigidbody.velocity = new Vector3(myRigidbody.velocity.x, jumpSpeed, 0);
+                jumpSound.Play();
             }
 
 

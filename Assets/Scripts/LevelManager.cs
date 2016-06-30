@@ -11,6 +11,9 @@ public class LevelManager : MonoBehaviour {
 
     public int coinCount;
     public Text coinText;
+    private int coinBonusLifeCount;
+    public int bonusLifeTreshold;
+    public AudioSource coinSound;
 
     public Image heart1;
     public Image heart2;
@@ -59,6 +62,13 @@ public class LevelManager : MonoBehaviour {
             Respawn();
             isRespawning = true;
         }
+
+        if (coinBonusLifeCount >= bonusLifeTreshold)
+        {
+            currentLives += 1;
+            livesText.text = "Lives x " + currentLives;
+            coinBonusLifeCount -= bonusLifeTreshold;
+        }
     }
 
     public void Respawn()
@@ -102,6 +112,7 @@ public class LevelManager : MonoBehaviour {
         // If dead coins reset to 0
         coinCount = 0;
         coinText.text = ": " + coinCount;
+        coinBonusLifeCount = 0;
 
         // Activate the player
         thePlayer.gameObject.SetActive(true);
@@ -118,7 +129,9 @@ public class LevelManager : MonoBehaviour {
     public void AddCoins(int coinsToAdd)
     {
         coinCount += coinsToAdd;
+        coinBonusLifeCount += coinsToAdd;
         coinText.text = ": " + coinCount;
+        coinSound.Play();
     }
 
     public void AddLives(int livesToAdd)
