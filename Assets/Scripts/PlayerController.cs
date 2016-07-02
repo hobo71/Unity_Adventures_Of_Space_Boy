@@ -6,6 +6,7 @@ public class PlayerController : MonoBehaviour {
     // Player related
     public float moveSpeed;
     public float jumpSpeed;
+    private float activeMoveSpeed;
 
     // For checking with collision
     public Transform groundCheck;
@@ -34,6 +35,9 @@ public class PlayerController : MonoBehaviour {
     public AudioSource hurtSound;
     public AudioSource checkPointSound;
 
+    private bool onPlatform;
+    public float onPlatformSpeedModifier;
+
 	// Use this for initialization
 	void Start () {
         // Gets the components which this script is attached to
@@ -43,13 +47,15 @@ public class PlayerController : MonoBehaviour {
         respawnPosition = transform.position;
 
         theLevelManager = FindObjectOfType<LevelManager>();
+
+        activeMoveSpeed = moveSpeed;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
         IsGroundedMethod(groundCheck, groundCheckRadius, whatIsGround);
-        MoveLeftandRight(moveSpeed, jumpSpeed);
+        Movement(activeMoveSpeed, jumpSpeed);
         Animate(myRigidbody, isGrounded);
         StompBoxActivator();
 
@@ -87,6 +93,7 @@ public class PlayerController : MonoBehaviour {
         if (other.gameObject.tag == "MovingPlatform")
         {
             transform.parent = other.transform;
+            onPlatform = true;
         }
     }
 
@@ -96,6 +103,7 @@ public class PlayerController : MonoBehaviour {
         if (other.gameObject.tag == "MovingPlatform")
         {
             transform.parent = null;
+            onPlatform = false;
         }
     }
 
@@ -119,21 +127,31 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
-    private void MoveLeftandRight(float moveSpeed, float jumpSpeed)
+    private void Movement(float activeMoveSpeed, float jumpSpeed)
     {
+        if (onPlatform)
+        {
+            activeMoveSpeed = moveSpeed * onPlatformSpeedModifier;
+        }
+        else
+        {
+            activeMoveSpeed = moveSpeed;
+        }
+
+
         if (knockbackCounter <= 0)
         {
             // Right and Left movement using Axes from Input
             if (Input.GetAxisRaw("Horizontal") > 0f)
             {
-                myRigidbody.velocity = new Vector3(moveSpeed, myRigidbody.velocity.y, 0f);
+                myRigidbody.velocity = new Vector3(activeMoveSpeed, myRigidbody.velocity.y, 0f);
 
                 // When player moving right, it will face right
                 transform.localScale= new Vector3(1f, 1f, 1f);
             }
             else if (Input.GetAxisRaw("Horizontal") < 0f)
             {
-                myRigidbody.velocity = new Vector3(-moveSpeed, myRigidbody.velocity.y, 0f);
+                myRigidbody.velocity = new Vector3(-activeMoveSpeed, myRigidbody.velocity.y, 0f);
 
                 // When player moving left, it will face left
                 transform.localScale = new Vector3(-1f, 1f, 1f);
