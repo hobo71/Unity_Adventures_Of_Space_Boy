@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour {
     public float moveSpeed;
     public float jumpSpeed;
     private float activeMoveSpeed;
+    public bool canMove;
 
     // For checking with collision
     public Transform groundCheck;
@@ -28,7 +29,7 @@ public class PlayerController : MonoBehaviour {
     public float invincibilityLength;
     private float invincibilityCounter;
 
-    private Rigidbody2D myRigidbody;
+    public Rigidbody2D myRigidbody;
     private Animator myAnim;
 
     public AudioSource jumpSound;
@@ -49,6 +50,8 @@ public class PlayerController : MonoBehaviour {
         theLevelManager = FindObjectOfType<LevelManager>();
 
         activeMoveSpeed = moveSpeed;
+
+        canMove = true;
 	}
 	
 	// Update is called once per frame
@@ -139,7 +142,7 @@ public class PlayerController : MonoBehaviour {
         }
 
 
-        if (knockbackCounter <= 0)
+        if (knockbackCounter <= 0 && canMove)
         {
             // Right and Left movement using Axes from Input
             if (Input.GetAxisRaw("Horizontal") > 0f)
